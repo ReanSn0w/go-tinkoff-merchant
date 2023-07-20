@@ -70,7 +70,7 @@ type Phone struct {
 	Description string `json:"description"`
 }
 
-type RegistrationResponse struct {
+type Response struct {
 	ID        string        `json:"code"`
 	ShopCode  int64         `json:"shopCode"`
 	Terminals []interface{} `json:"terminals"`

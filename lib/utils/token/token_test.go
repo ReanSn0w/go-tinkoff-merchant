@@ -8,7 +8,7 @@ import (
 )
 
 func Test_New(t *testing.T) {
-	tok, err := token.New(lgr.Default(), "https://sm-register-test.tcsbank.ru", "aceplace", "aceplace")
+	tok, err := token.New(lgr.Default(), "https://sm-register-test.tscbank.ru/oauth/token", "aceplace", "SysANx")
 	if err != nil {
 		t.Log(err)
 		t.FailNow()

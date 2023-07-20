@@ -11,8 +11,8 @@ type ErrorResponse struct {
 	Path         string       `json:"path,omitempty"`
 }
 
-func (err *ErrorResponse) Error() string {
-	return fmt.Sprintf("Response error: %v", err)
+func (e *ErrorResponse) Error() string {
+	return fmt.Sprintf("response error: %v", e)
 }
 
 type ErrorField struct {

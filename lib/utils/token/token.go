@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"sync"
 	"time"
@@ -30,7 +30,7 @@ func New(logger utils.Logger, baseURL, login, password string) (*Token, error) {
 		return nil, err
 	}
 
-	token.refreshTask()
+	go token.refreshTask()
 	return token, nil
 }
 
@@ -72,7 +72,7 @@ func (t *Token) Stop() {
 }
 
 func (t *Token) refreshTask() {
-	t.timer = time.NewTimer(0)
+	t.timer = time.NewTimer(time.Second * 60)
 	restart := 0
 
 	for {
@@ -108,7 +108,7 @@ func (t *Token) refreshOnce() error {
 	}
 
 	req.SetBasicAuth("partner", "partner")
-	req.Header.Add("Content-Type", "multipart/form-data")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := t.cl.Do(req)
 	if err != nil {
@@ -136,12 +136,15 @@ func (t *Token) refreshOnce() error {
 }
 
 func (t *Token) makeBody() io.Reader {
-	buffer := new(bytes.Buffer)
 
-	mpf := multipart.NewWriter(buffer)
-	_ = mpf.WriteField("grant_type", "password")
-	_ = mpf.WriteField("username", t.login)
-	_ = mpf.WriteField("password", t.password)
+	return bytes.NewReader([]byte(fmt.Sprintf("grant_type=password&username=%v&password=%v", t.login, t.password)))
 
-	return buffer
+	// buffer := new(bytes.Buffer)
+
+	// mpf := multipart.NewWriter(buffer)
+	// _ = mpf.WriteField("grant_type", "password")
+	// _ = mpf.WriteField("username", t.login)
+	// _ = mpf.WriteField("password", t.password)
+
+	// return buffer
 }

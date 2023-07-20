@@ -3,9 +3,21 @@ package tinkoff
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
+	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/partner"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils"
 )
+
+func New(debug bool, log utils.Logger) *Tinkoff {
+	return &Tinkoff{
+		debug: debug,
+		log:   log,
+		cl: &http.Client{
+			Timeout: time.Second * 5,
+		},
+	}
+}
 
 type Tinkoff struct {
 	debug bool
@@ -13,11 +25,15 @@ type Tinkoff struct {
 	cl    *http.Client
 }
 
+func (t *Tinkoff) Partner(username, password string) (*partner.Partner, error) {
+	return partner.New(t, username, password)
+}
+
 func (t *Tinkoff) Debug() bool {
 	return t.debug
 }
 
-func (t *Tinkoff) Logger() utils.Logger {
+func (t *Tinkoff) Log() utils.Logger {
 	return t.log
 }
 

@@ -5,7 +5,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/customer"
+	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/notifications"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/partner"
+	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/payments"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils"
 )
 
@@ -27,6 +30,18 @@ type Tinkoff struct {
 
 func (t *Tinkoff) Partner(username, password string) (*partner.Partner, error) {
 	return partner.New(t, username, password)
+}
+
+func (t *Tinkoff) Payments(terminalID string) (*payments.PaymentManager, error) {
+	return payments.New(t, terminalID)
+}
+
+func (t *Tinkoff) Notifications(terminalID string) *notifications.Manager {
+	return notifications.New(t.log, terminalID)
+}
+
+func (t *Tinkoff) Customer(terminalID string) *customer.Manager {
+	return customer.New(t, terminalID)
 }
 
 func (t *Tinkoff) Debug() bool {

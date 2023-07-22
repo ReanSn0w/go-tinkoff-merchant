@@ -3,8 +3,8 @@ package tinkoff
 import "fmt"
 
 type ErrorResponse struct {
-	Timestamp    string       `json:"timestamp"`
 	Status       int64        `json:"status"`
+	Timestamp    string       `json:"timestamp,omitempty"`
 	ErrorMessage string       `json:"error,omitempty"`
 	ErrorFiedls  []ErrorField `json:"errors,omitempty"`
 	Message      string       `json:"message,omitempty"`

@@ -15,10 +15,11 @@ const (
 )
 
 // New создает новую структуру для работы с платежами
-func New(service utils.TinkoffService, terminalID string) (*PaymentManager, error) {
+func New(service utils.TinkoffService, terminalID, password string) (*PaymentManager, error) {
 	return &PaymentManager{
 		service:    service,
 		terminalID: terminalID,
+		password:   password,
 	}, nil
 }
 
@@ -26,12 +27,13 @@ func New(service utils.TinkoffService, terminalID string) (*PaymentManager, erro
 type PaymentManager struct {
 	service    utils.TinkoffService
 	terminalID string
+	password   string
 }
 
 // Init инициирует платежную сессию
 func (p *PaymentManager) Init(data InitRequest) (*InitResponse, error) {
 	data.TerminalKey = p.terminalID
-	sign := signature.MakeSignature(data)
+	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
 
 	result := &InitResponse{}
@@ -42,7 +44,7 @@ func (p *PaymentManager) Init(data InitRequest) (*InitResponse, error) {
 // Confirm Осуществляет списание заблокированных денежных средств
 func (p *PaymentManager) Confirm(data ConfirmRequest) (*ConfirmResponse, error) {
 	data.TerminalKey = p.terminalID
-	sign := signature.MakeSignature(data)
+	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
 
 	result := &ConfirmResponse{}
@@ -53,7 +55,7 @@ func (p *PaymentManager) Confirm(data ConfirmRequest) (*ConfirmResponse, error) 
 // Charge осуществляет списание рекуррентного платежа
 func (p *PaymentManager) Charge(data ChargeRequest) (*ChargeResponse, error) {
 	data.TerminalKey = p.terminalID
-	sign := signature.MakeSignature(data)
+	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
 
 	result := &ChargeResponse{}
@@ -64,7 +66,7 @@ func (p *PaymentManager) Charge(data ChargeRequest) (*ChargeResponse, error) {
 // Cancel метод для отмены плетежа
 func (p *PaymentManager) Cancel(data CancelRequest) (*CancelResponse, error) {
 	data.TerminalKey = p.terminalID
-	sign := signature.MakeSignature(data)
+	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
 
 	result := &CancelResponse{}
@@ -75,7 +77,7 @@ func (p *PaymentManager) Cancel(data CancelRequest) (*CancelResponse, error) {
 // GetState возвращает статус платежа
 func (p *PaymentManager) GetState(data GetStateRequest) (*GetStateResponse, error) {
 	data.TerminalKey = p.terminalID
-	sign := signature.MakeSignature(data)
+	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
 
 	result := &GetStateResponse{}
@@ -85,7 +87,7 @@ func (p *PaymentManager) GetState(data GetStateRequest) (*GetStateResponse, erro
 
 func (p *PaymentManager) CheckOrder(data CheckOrderRequest) (*СheckOrderResponse, error) {
 	data.TerminalKey = p.terminalID
-	sign := signature.MakeSignature(data)
+	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
 
 	result := &СheckOrderResponse{}
@@ -95,7 +97,7 @@ func (p *PaymentManager) CheckOrder(data CheckOrderRequest) (*СheckOrderRespons
 
 func (p *PaymentManager) SendClosingReceipt(data SendClosingReceiptRequest) (*SendClosingReceiptResponse, error) {
 	data.TerminalKey = p.terminalID
-	sign := signature.MakeSignature(data)
+	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
 
 	result := &SendClosingReceiptResponse{}

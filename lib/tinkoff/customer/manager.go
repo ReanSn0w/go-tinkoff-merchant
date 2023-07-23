@@ -14,16 +14,18 @@ var (
 	customerURL     = "https://securepay.tinkoff.ru/v2"
 )
 
-func New(t utils.TinkoffService, terminalKey string) *Manager {
+func New(t utils.TinkoffService, terminalKey, password string) *Manager {
 	return &Manager{
 		service:     t,
 		terminalKey: terminalKey,
+		password:    password,
 	}
 }
 
 type Manager struct {
 	service     utils.TinkoffService
 	terminalKey string
+	password    string
 }
 
 // Add добавляет нового пользователя
@@ -82,7 +84,7 @@ func (p *Manager) buildRequest(customerKey string, mods ...RequestModificator) R
 		r = mods[index](r)
 	}
 
-	sign := signature.MakeSignature(r)
+	sign := signature.MakeSignature(r, p.password)
 	r.Token = sign
 	return r
 }

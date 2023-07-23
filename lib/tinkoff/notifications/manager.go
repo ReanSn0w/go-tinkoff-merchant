@@ -9,7 +9,7 @@ import (
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils/signature"
 )
 
-func New(log utils.Logger, terminalKey string) *Manager {
+func New(log utils.Logger, terminalKey, password string) *Manager {
 	return &Manager{
 		terminalKey: terminalKey,
 	}
@@ -17,6 +17,7 @@ func New(log utils.Logger, terminalKey string) *Manager {
 
 type Manager struct {
 	terminalKey string
+	password    string
 	logger      utils.Logger
 }
 
@@ -40,7 +41,7 @@ func (m *Manager) HandlerFunc(action func(*Item) error) func(http.ResponseWriter
 
 		sign := item.Token
 		item.Token = ""
-		if signature.MakeSignature(item) != sign {
+		if signature.MakeSignature(item, m.password) != sign {
 			m.log(errors.New("body signature invalid"))
 			w.WriteHeader(http.StatusBadRequest)
 			return

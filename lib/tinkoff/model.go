@@ -12,7 +12,7 @@ type ErrorResponse struct {
 }
 
 func (e *ErrorResponse) Error() string {
-	return fmt.Sprintf("response error: %v", e)
+	return fmt.Sprint("response error: ", e)
 }
 
 type ErrorField struct {

@@ -32,16 +32,16 @@ func (t *Tinkoff) Partner(username, password string) (*partner.Partner, error) {
 	return partner.New(t, username, password)
 }
 
-func (t *Tinkoff) Payments(terminalID string) (*payments.PaymentManager, error) {
-	return payments.New(t, terminalID)
+func (t *Tinkoff) Payments(terminalID, password string) (*payments.PaymentManager, error) {
+	return payments.New(t, terminalID, password)
 }
 
-func (t *Tinkoff) Notifications(terminalID string) *notifications.Manager {
-	return notifications.New(t.log, terminalID)
+func (t *Tinkoff) Notifications(terminalID, password string) *notifications.Manager {
+	return notifications.New(t.log, terminalID, password)
 }
 
-func (t *Tinkoff) Customer(terminalID string) *customer.Manager {
-	return customer.New(t, terminalID)
+func (t *Tinkoff) Customer(terminalID, password string) *customer.Manager {
+	return customer.New(t, terminalID, password)
 }
 
 func (t *Tinkoff) Debug() bool {

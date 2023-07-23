@@ -1,7 +1,7 @@
 package signature
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"reflect"
@@ -12,34 +12,37 @@ type Signature interface {
 	SetSignature([]byte)
 }
 
-func MakeSignature(data any) string {
+func MakeSignature(data any, password string) string {
 	dataType := reflect.TypeOf(data)
 	dataValue := reflect.ValueOf(data)
 
 	count := dataType.NumField()
 
-	pairs := []signaturePair{}
+	pairs := []signaturePair{
+		{
+			Key:   "Password",
+			Value: password,
+		},
+	}
 
 	for i := 0; i < count; i++ {
 		value := ""
 		t := dataValue.Field(i).Type().String()
+
+		// Другие типы игнорируются так как в структурах для хначений используются только данные типы
 		switch t {
 		case "bool":
 			value = fmt.Sprint(dataValue.Field(i).Bool())
 		case "string":
 			value = dataValue.Field(i).String()
-		case "int":
+		case "int64":
 			value = fmt.Sprint(dataValue.Field(i).Int())
-		case "float32", "float64":
-			value = fmt.Sprint(dataValue.Field(i).Float())
-		case "uint":
-			value = fmt.Sprint(dataValue.Field(i).Uint())
 		default:
 			continue
 		}
 
 		pairs = append(pairs, signaturePair{
-			Key:   dataType.Field(i).Tag.Get("json"),
+			Key:   dataType.Field(i).Name,
 			Value: value,
 		})
 
@@ -63,11 +66,13 @@ func makeSignature(pairs []signaturePair) string {
 			continue
 		}
 
-		stringForHash += item.Key + item.Value
+		stringForHash += item.Value
 	}
 
-	hash := md5.Sum([]byte(stringForHash))
-	return hex.EncodeToString(hash[:])
+	hash := sha256.New()
+	hash.Write([]byte(stringForHash))
+	value := hash.Sum(nil)
+	return hex.EncodeToString(value[:])
 }
 
 type signaturePair struct {

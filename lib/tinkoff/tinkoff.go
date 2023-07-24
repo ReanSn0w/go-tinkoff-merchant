@@ -32,7 +32,7 @@ func (t *Tinkoff) Partner(username, password string) (*partner.Partner, error) {
 	return partner.New(t, username, password)
 }
 
-func (t *Tinkoff) Payments(terminalID, password string) (*payments.PaymentManager, error) {
+func (t *Tinkoff) Payments(terminalID, password string) (*payments.Manager, error) {
 	return payments.New(t, terminalID, password)
 }
 

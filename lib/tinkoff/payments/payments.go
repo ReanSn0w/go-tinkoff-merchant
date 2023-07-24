@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/notifications"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils/signature"
 )
@@ -15,8 +16,8 @@ const (
 )
 
 // New создает новую структуру для работы с платежами
-func New(service utils.TinkoffService, terminalID, password string) (*PaymentManager, error) {
-	return &PaymentManager{
+func New(service utils.TinkoffService, terminalID, password string) (*Manager, error) {
+	return &Manager{
 		service:    service,
 		terminalID: terminalID,
 		password:   password,
@@ -24,14 +25,21 @@ func New(service utils.TinkoffService, terminalID, password string) (*PaymentMan
 }
 
 // PaymentsManager содержит методы для работы с платежами
-type PaymentManager struct {
+type Manager struct {
 	service    utils.TinkoffService
 	terminalID string
 	password   string
 }
 
+// Hnadler - создает handler для получения уведомлений
+func (p *Manager) Handler(action func(item *notifications.Item) error) func(http.ResponseWriter, *http.Request) {
+	return notifications.
+		New(p.service.Log(), p.terminalID, p.password).
+		HandlerFunc(action)
+}
+
 // Init инициирует платежную сессию
-func (p *PaymentManager) Init(data InitRequest) (*InitResponse, error) {
+func (p *Manager) Init(data InitRequest) (*InitResponse, error) {
 	data.TerminalKey = p.terminalID
 	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
@@ -42,7 +50,7 @@ func (p *PaymentManager) Init(data InitRequest) (*InitResponse, error) {
 }
 
 // Confirm Осуществляет списание заблокированных денежных средств
-func (p *PaymentManager) Confirm(data ConfirmRequest) (*ConfirmResponse, error) {
+func (p *Manager) Confirm(data ConfirmRequest) (*ConfirmResponse, error) {
 	data.TerminalKey = p.terminalID
 	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
@@ -53,7 +61,7 @@ func (p *PaymentManager) Confirm(data ConfirmRequest) (*ConfirmResponse, error) 
 }
 
 // Charge осуществляет списание рекуррентного платежа
-func (p *PaymentManager) Charge(data ChargeRequest) (*ChargeResponse, error) {
+func (p *Manager) Charge(data ChargeRequest) (*ChargeResponse, error) {
 	data.TerminalKey = p.terminalID
 	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
@@ -64,7 +72,7 @@ func (p *PaymentManager) Charge(data ChargeRequest) (*ChargeResponse, error) {
 }
 
 // Cancel метод для отмены плетежа
-func (p *PaymentManager) Cancel(data CancelRequest) (*CancelResponse, error) {
+func (p *Manager) Cancel(data CancelRequest) (*CancelResponse, error) {
 	data.TerminalKey = p.terminalID
 	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
@@ -75,7 +83,7 @@ func (p *PaymentManager) Cancel(data CancelRequest) (*CancelResponse, error) {
 }
 
 // GetState возвращает статус платежа
-func (p *PaymentManager) GetState(data GetStateRequest) (*GetStateResponse, error) {
+func (p *Manager) GetState(data GetStateRequest) (*GetStateResponse, error) {
 	data.TerminalKey = p.terminalID
 	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
@@ -85,7 +93,7 @@ func (p *PaymentManager) GetState(data GetStateRequest) (*GetStateResponse, erro
 	return result, err
 }
 
-func (p *PaymentManager) CheckOrder(data CheckOrderRequest) (*СheckOrderResponse, error) {
+func (p *Manager) CheckOrder(data CheckOrderRequest) (*СheckOrderResponse, error) {
 	data.TerminalKey = p.terminalID
 	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
@@ -95,7 +103,7 @@ func (p *PaymentManager) CheckOrder(data CheckOrderRequest) (*СheckOrderRespons
 	return result, err
 }
 
-func (p *PaymentManager) SendClosingReceipt(data SendClosingReceiptRequest) (*SendClosingReceiptResponse, error) {
+func (p *Manager) SendClosingReceipt(data SendClosingReceiptRequest) (*SendClosingReceiptResponse, error) {
 	data.TerminalKey = p.terminalID
 	sign := signature.MakeSignature(data, p.password)
 	data.Token = sign
@@ -105,7 +113,7 @@ func (p *PaymentManager) SendClosingReceipt(data SendClosingReceiptRequest) (*Se
 	return result, err
 }
 
-func (p *PaymentManager) request(path string, method string, request, response interface{}) error {
+func (p *Manager) request(path string, method string, request, response interface{}) error {
 	buffer := new(bytes.Buffer)
 	encoder := json.NewEncoder(buffer)
 	err := encoder.Encode(request)
@@ -121,7 +129,7 @@ func (p *PaymentManager) request(path string, method string, request, response i
 	return p.service.Request(req, response)
 }
 
-func (p *PaymentManager) buildURL(path string) string {
+func (p *Manager) buildURL(path string) string {
 	if p.service.Debug() {
 		return paymentsURLTest + path
 	}

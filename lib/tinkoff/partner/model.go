@@ -28,14 +28,14 @@ type Address struct {
 }
 
 type BankAccount struct {
-	Account    string `json:"account"`    // Рассчетный счет
-	KorAccount string `json:"korAccount"` // Корр счет
-	BankName   string `json:"bankName"`   // Название банка
-	Bik        string `json:"bik"`        // БИК
-	Kbk        string `json:"kbk"`        // КБК
-	Oktmo      string `json:"oktmo"`      // ОКТМО
-	Details    string `json:"details"`    // Перевод средств по договору No 3333-3333 от 16.09.2021 по Реестру Операций от ${date}. Сумма комиссии ${rub} руб. ${kop} коп., НДС не облагается.
-	Tax        int64  `json:"tax"`        // Процент отчислений в пользу маркетплейса
+	Account    string `json:"account"`         // Рассчетный счет
+	KorAccount string `json:"korAccount"`      // Корр счет
+	BankName   string `json:"bankName"`        // Название банка
+	Bik        string `json:"bik"`             // БИК
+	Kbk        string `json:"kbk,omitempty"`   // КБК
+	Oktmo      string `json:"oktmo,omitempty"` // ОКТМО
+	Details    string `json:"details"`         // Перевод средств по договору No 3333-3333 от 16.09.2021 по Реестру Операций от ${date}. Сумма комиссии ${rub} руб. ${kop} коп., НДС не облагается.
+	Tax        int64  `json:"tax"`             // Процент отчислений в пользу маркетплейса
 }
 
 type Ceo struct {

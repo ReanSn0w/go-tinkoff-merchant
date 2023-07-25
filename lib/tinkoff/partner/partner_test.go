@@ -17,6 +17,7 @@ func Test_New(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
+		t.Fail()
 	}
 }
 
@@ -32,37 +33,34 @@ func TestPartner_Register(t *testing.T) {
 	resp, err := p.Register(partner.RegistrationRequest{
 		ID:                ID,
 		BillingDescriptor: "AcePlace",
-		FullName:          "ООО ЭйсПлейс",
-		Name:              "ООО ЭйсПлейс",
-		Inn:               "",
-		Kpp:               "",
-		Ogrn:              0,
+		FullName:          "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"ЭЙС ПЛЭЙС\"",
+		Name:              "ООО \"ЭЙС ПЛЭЙС\"",
+		Inn:               "7743286296",
+		Kpp:               "774301001",
+		Ogrn:              5187746009810,
 		Smz:               false,
 		Addresses: []partner.Address{{
 			Type:    "legal",
-			Zip:     "",
-			Country: "RU",
+			Zip:     "125212",
+			Country: "RUS",
 			City:    "Москва",
 			Street:  "улица Адмирала Макарова, 15",
 		}},
 		Email: "llc.aceplace@yandex.ru",
 		Ceo: partner.Ceo{
-			FirstName:  "",
-			LastName:   "",
-			MiddleName: "",
-			BirthDate:  "",
-			//Country:    "",
+			FirstName:  "Сергей",
+			LastName:   "Сухачев",
+			MiddleName: "Сергеевич",
+			BirthDate:  "1990-03-29",
 		},
 		SiteURL: "https://aceplace.ru/aceplace",
 		BankAccount: partner.BankAccount{
-			Account:    "",
-			KorAccount: "",
-			BankName:   "",
-			Bik:        "",
-			Kbk:        "",
-			Oktmo:      "",
-			Details:    "",
-			Tax:        0,
+			Account:    "40817810100002965390",
+			KorAccount: "30101810145250000974",
+			BankName:   "АО «Тинькофф Банк»",
+			Bik:        "044525974",
+			Details:    "Перевод средств по договору No 0-0 от 16.09.2021 по Реестру Операций от ${date}. Сумма комиссии ${rub} руб. ${kop} коп., НДС не облагается.",
+			Tax:        10,
 		},
 	})
 

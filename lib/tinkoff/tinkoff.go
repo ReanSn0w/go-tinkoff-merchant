@@ -53,6 +53,8 @@ func (t *Tinkoff) Log() utils.Logger {
 }
 
 func (t *Tinkoff) Request(r *http.Request, data any) error {
+	r.Header.Add("Content-Type", "application/json")
+
 	resp, err := t.cl.Do(r)
 	if err != nil {
 		return err

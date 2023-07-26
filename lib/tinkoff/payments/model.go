@@ -26,13 +26,13 @@ type InitRequest struct {
 		DeviceBrowser string `json:"Browser,omitempty"`       // Название браузера
 		TinkoffPayWeb bool   `json:"TinkoffPayWeb,omitempty"` // Признак проведения платежа через TinkoffPay
 	} `json:"DATA,omitempty"` // Дополнительные параметры платежа
-	Reciept     Reciept `json:"Reciept,omitempty"`    // Данные чека
+	Receipt     Receipt `json:"Receipt,omitempty"`    // Данные чека
 	Shops       []Shop  `json:"Shops,omitempty"`      // Объект с данными для распределения платежа по магазинам
 	Descriptior string  `json:"Descriptor,omitempty"` // Динамический дескриптор точки
 }
 
 // При ffd 1.05
-type Reciept struct {
+type Receipt struct {
 	Items      []Item   // Массив товаров в чеке
 	FfdVersion string   `json:"FfdVersion,omitempty"` // [1.2, 1.05]
 	Email      string   `json:"Email,omitempty"`      // Email пользователя
@@ -71,11 +71,11 @@ type Item struct {
 	Ean13    string `json:"Ean13,omitempty"`    // Штрих код в форамате, который требует касса
 	ShopCode string `json:"ShopCode,omitempty"` // Код магазина
 
-	AgentData struct {
-	} `json:"AgentData,omitempty"` // Агентсткая схема. Параметробязателен при спользовании агентской схемы
+	// AgentData struct {
+	// } `json:"AgentData,omitempty"` // Агентсткая схема. Параметробязателен при спользовании агентской схемы
 
-	SupplierInfo struct {
-	} `json:"SupplierInfo,omitempty"` // Данные поставщика платежного агента
+	// SupplierInfo struct {
+	// } `json:"SupplierInfo,omitempty"` // Данные поставщика платежного агента
 }
 
 type Payments struct {
@@ -108,7 +108,7 @@ type ConfirmRequest struct {
 	Token       string  // Подпись запроса
 	IP          string  `json:"IP,omitempty"`      // IP пользователя
 	Amount      int64   `json:"Amount,omitempty"`  // Сумма в копейках
-	Reciept     Reciept `json:"Reciept,omitempty"` // Данные чека
+	Reciept     Receipt `json:"Reciept,omitempty"` // Данные чека
 	Shops       []Shop  `json:"Shops,omitempty"`   // Данные маркетплейсов
 	Route       string  `json:"Route,omitempty"`   // [ТСВ, BNPL] Способ платежа
 	Source      string  `json:"Source,omitempty"`  // [Installment, BNPL] Источник платежа
@@ -165,7 +165,7 @@ type CancelRequest struct {
 	Token             string  // Подпись запроса
 	IP                string  `json:"IP,omitempty"`               // IP клинта
 	Amount            int64   `json:"Amount,omitempty"`           // Суммма в копейках
-	Reciept           Reciept `json:"Reciept,omitempty"`          // Список товаров по которым производится отмена платежа
+	Reciept           Receipt `json:"Reciept,omitempty"`          // Список товаров по которым производится отмена платежа
 	Shops             []Shop  `json:"Shops,omitempty"`            // JSON объект с данными маркетплейса
 	Route             string  `json:"Route,omitempty"`            // [ТСВ, BNPL] Способ платежа
 	Source            string  `json:"Source,omitempty"`           // [Installment, BNPL] Источник платежа
@@ -250,7 +250,7 @@ type SendClosingReceiptRequest struct {
 	TerminalKey string  // Идентификатор терминала выдаваемый банком
 	PaymentID   string  // Номер заказа в стистеме продавца
 	Token       string  // Подпись запроса
-	Receipt     Reciept // Массив данных чека
+	Receipt     Receipt // Массив данных чека
 }
 
 type SendClosingReceiptResponse struct {

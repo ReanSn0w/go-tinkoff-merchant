@@ -17,7 +17,7 @@ func New(debug bool, log utils.Logger) *Tinkoff {
 		debug: debug,
 		log:   log,
 		cl: &http.Client{
-			Timeout: time.Second * 5,
+			Timeout: time.Second * 10,
 		},
 	}
 }

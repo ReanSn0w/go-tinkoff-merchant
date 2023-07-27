@@ -99,7 +99,7 @@ func (p *Manager) CheckOrder(data CheckOrderRequest) (*СheckOrderResponse, erro
 	data.Token = sign
 
 	result := &СheckOrderResponse{}
-	err := p.request("/GetState", http.MethodPost, data, result)
+	err := p.request("/CheckOrder", http.MethodPost, data, result)
 	return result, err
 }
 

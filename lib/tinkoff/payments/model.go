@@ -238,7 +238,7 @@ type CheckOrderPayments struct {
 	Amount    int64  `json:"Amount,omitempty"` // Суммма в копейках
 	Status    string // Статус транзакции
 	RRN       string `json:"RRN,omitempty"` // RRN опреции
-	Success   string // Успешность прохождения запроса
+	Success   bool   // Успешность прохождения запроса
 	ErrorCode string // 0 - если успешно
 	Message   string `json:"Message,omitempty"` // Сообщение об ошибке
 }

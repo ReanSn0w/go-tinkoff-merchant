@@ -207,11 +207,11 @@ type GetStateResponse struct {
 	ErrorCode   string // 0 - если успешно
 	Message     string `json:"Message,omitempty"` // Сообщение об ошибке
 	Details     string `json:"Details,omitempty"` // Подробное описание ошибки
-	Params      struct {
-		Route        string `json:"Route,omitempty"`        // [TCB] способ платежа
-		Source       string `json:"Source,omitempty"`       // [Installment] источник платежа
-		CredotAmount int64  `json:"CreditAmount,omitempty"` // Сумма выданного платежа в копейках
-	} `json:"Params,omitempty"` // Для платежей в рассрочку
+	// Params      struct {
+	// 	Route        string `json:"Route,omitempty"`        // [TCB] способ платежа
+	// 	Source       string `json:"Source,omitempty"`       // [Installment] источник платежа
+	// 	CredotAmount int64  `json:"CreditAmount,omitempty"` // Сумма выданного платежа в копейках
+	// } `json:"Params,omitempty"` // Для платежей в рассрочку
 }
 
 // MARK: - CheckOrder

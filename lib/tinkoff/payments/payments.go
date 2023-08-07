@@ -32,10 +32,10 @@ type Manager struct {
 }
 
 // Hnadler - создает handler для получения уведомлений
-func (p *Manager) Handler(action func(item *notifications.Item) error) func(http.ResponseWriter, *http.Request) {
+func (p *Manager) Handler(action func(item notifications.PaymentItem) error) func(http.ResponseWriter, *http.Request) {
 	return notifications.
 		New(p.service.Log(), p.terminalID, p.password).
-		HandlerFunc(action)
+		Payment(action)
 }
 
 // Init инициирует платежную сессию

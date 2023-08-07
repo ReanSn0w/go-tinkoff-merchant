@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/notifications"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils/signature"
 )
@@ -44,6 +45,7 @@ func (m *Manager) Get(customerKey string) (*GetResponse, error) {
 	return result, err
 }
 
+// Remove удаляет пользователя
 func (m *Manager) Remove(customerKey string) (*RemoveResponse, error) {
 	data := m.buildRequest(customerKey)
 	result := &RemoveResponse{}
@@ -51,11 +53,34 @@ func (m *Manager) Remove(customerKey string) (*RemoveResponse, error) {
 	return result, err
 }
 
+// ListCards получает список карт пользователя
 func (m *Manager) ListCards(customerKey string) ([]CardItem, error) {
 	data := m.buildRequest(customerKey)
 	result := []CardItem{}
 	err := m.request("/GetCardList", http.MethodPost, data, result)
 	return result, err
+}
+
+// AddCard Привязывает карту пользователю
+func (m *Manager) AddCard(customerKey string, mods ...RequestModificator) (*AddCardResponse, error) {
+	data := m.buildRequest(customerKey, mods...)
+	result := &AddCardResponse{}
+	err := m.request("/AddCard", http.MethodPost, data, result)
+	return result, err
+}
+
+func (m *Manager) RemoveCard(customerKey, cardID string) (*RemoveCardResponse, error) {
+	data := m.buildRequest(customerKey, WithCardID(cardID))
+	result := &RemoveCardResponse{}
+	err := m.request("/RemoveCard", http.MethodPost, data, result)
+	return result, err
+}
+
+// Hnadler - создает handler для получения уведомлений
+func (p *Manager) Handler(action func(item notifications.CardItem) error) func(http.ResponseWriter, *http.Request) {
+	return notifications.
+		New(p.service.Log(), p.terminalKey, p.password).
+		Card(action)
 }
 
 func (p *Manager) request(path string, method string, request, response interface{}) error {

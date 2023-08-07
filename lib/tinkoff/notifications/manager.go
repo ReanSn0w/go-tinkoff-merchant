@@ -21,7 +21,29 @@ type Manager struct {
 	logger      utils.Logger
 }
 
-func (m *Manager) HandlerFunc(action func(*Item) error) func(http.ResponseWriter, *http.Request) {
+func (m *Manager) Payment(action func(PaymentItem) error) func(http.ResponseWriter, *http.Request) {
+	return m.notificationHandler(PaymentItem{}, func(i Item) error {
+		item, ok := i.(PaymentItem)
+		if !ok {
+			return errors.New("invalid item type")
+		}
+
+		return action(item)
+	})
+}
+
+func (m *Manager) Card(action func(CardItem) error) func(http.ResponseWriter, *http.Request) {
+	return m.notificationHandler(CardItem{}, func(i Item) error {
+		item, ok := i.(CardItem)
+		if !ok {
+			return errors.New("invalid item type")
+		}
+
+		return action(item)
+	})
+}
+
+func (m *Manager) notificationHandler(object Item, action func(Item) error) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := m.checkIPAddress(r.RemoteAddr)
 		if err != nil {
@@ -31,29 +53,28 @@ func (m *Manager) HandlerFunc(action func(*Item) error) func(http.ResponseWriter
 		}
 
 		decoder := json.NewDecoder(r.Body)
-		item := &Item{}
-		err = decoder.Decode(item)
+		err = decoder.Decode(&object)
 		if err != nil {
 			m.log(err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		sign := item.Token
-		item.Token = ""
-		if signature.MakeSignature(item, m.password) != sign {
-			m.log(errors.New("body signature invalid"))
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		if item.TerminalKey != m.terminalKey {
+		if object.GetTerminalKey() != m.terminalKey {
 			m.log(errors.New("invald terminal key"))
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		err = action(item)
+		sign := object.GetToken()
+		object = object.RemoveToken()
+		if signature.MakeSignature(object, m.password) != sign {
+			m.log(errors.New("invalid signature"))
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		err = action(object)
 		if err != nil {
 			m.log(err)
 			w.WriteHeader(http.StatusInternalServerError)

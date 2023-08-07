@@ -4,9 +4,22 @@ type Request struct {
 	TerminalKey string // Идентификатор терминала выданый банком
 	CustomerKey string // Идентификатор пользователя
 	Token       string // Подпись запроса
-	IP          string `json:"IP,omitempty"`    // IP адрес пользователя
-	Email       string `json:"Email,omitempty"` // Email клиента
-	Phone       string `json:"Phone,omitempty"` // Телефон клиента
+
+	// Метод проверки карты
+	// Default: NO
+	// Case: NO - сохранение карты без проверки
+	// Case: HOLD - списание на 0 рублей
+	// Case: 3DS - проверка по протоколу 3-D Secure
+	// Case: 3DSHOLD - проверка по протоколу 3-D Secure и списание на 0 рублей
+	CheckType string `json:"CheckType,omitempty"`
+
+	CardId string `json:"CardId,omitempty"` // Идентификатор карты
+
+	PayForm       string `json:"PayForm,omitempty"`       // Название платежной формы
+	ResidentState *bool  `json:"ResidentState,omitempty"` // Признак резидента РФ
+	IP            string `json:"IP,omitempty"`            // IP адрес пользователя
+	Email         string `json:"Email,omitempty"`         // Email клиента
+	Phone         string `json:"Phone,omitempty"`         // Телефон клиента
 }
 
 // MARK: - AddCustomer
@@ -57,4 +70,25 @@ type CardItem struct {
 	RebillId string `json:"RebillId,omitempty"` // Идентификатор рекуррентного платежа
 	CardType string `json:"CardType,omitempty"` // [0,1,2] (читай как списание, пополнение, списание и пополнение) Тип карты
 	ExpDate  string `json:"ExpDate,omitempty"`  // Срок действия карты
+}
+
+type AddCardResponse struct {
+	TerminalKey string // Идентификатор терминала выдаваемый банком
+	CustomerKey string // Идентификатор пользователя
+	RequestKey  string // Идентификатор запроса
+	PaymentURL  string // URL для перехода на страницу проверки карты
+	Success     bool   // Успешность прохождения запроса
+	ErrorCode   string // Код ошибки, 0 - для успешной операции
+	Message     string `json:"Message,omitempty"` // Текст сообщения
+	Details     string `json:"Details,omitempty"` // Подробное описание ошибки
+}
+
+type RemoveCardResponse struct {
+	TerminalKey string // Идентификатор терминала выдаваемый банком
+	CustomerKey string // Идентификатор пользователя
+	CardId      string // Идентификатор карты в системе банка
+	Success     bool   // Успешность прохождения запроса
+	ErrorCode   string // Код ошибки, 0 - для успешной операции
+	Message     string `json:"Message,omitempty"` // Текст сообщения
+	Details     string `json:"Details,omitempty"` // Подробное описание ошибки
 }

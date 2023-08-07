@@ -15,3 +15,10 @@ func AddEmail(email string) RequestModificator {
 		return r
 	}
 }
+
+func WithCardID(cardID string) RequestModificator {
+	return func(r Request) Request {
+		r.CardId = cardID
+		return r
+	}
+}

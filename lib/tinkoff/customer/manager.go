@@ -27,6 +27,11 @@ type Manager struct {
 	service     utils.TinkoffService
 	terminalKey string
 	password    string
+	customURL   string
+}
+
+func (m *Manager) SetCustomURL(url string) {
+	m.customURL = url
 }
 
 // Add добавляет нового пользователя
@@ -115,6 +120,10 @@ func (p *Manager) buildRequest(customerKey string, mods ...RequestModificator) R
 }
 
 func (p *Manager) buildURL(path string) string {
+	if p.customURL != "" {
+		return p.customURL + path
+	}
+
 	if p.service.Debug() {
 		return customerURLTest + path
 	}

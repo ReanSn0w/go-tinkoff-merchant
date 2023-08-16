@@ -3,12 +3,14 @@ package tinkoff
 import (
 	"encoding/json"
 	"net/http"
+	"net/http/httputil"
 	"time"
 
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/customer"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/notifications"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/partner"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/payments"
+	"github.com/ReanSn0w/go-tinkoff-merchant/lib/tinkoff/safedeal"
 	"github.com/ReanSn0w/go-tinkoff-merchant/lib/utils"
 )
 
@@ -44,6 +46,10 @@ func (t *Tinkoff) Customer(terminalID, password string) *customer.Manager {
 	return customer.New(t, terminalID, password)
 }
 
+func (t *Tinkoff) SafeDeal(terminalID, password string) (*safedeal.Manager, error) {
+	return safedeal.New(t, terminalID, password)
+}
+
 func (t *Tinkoff) Debug() bool {
 	return t.debug
 }
@@ -55,9 +61,19 @@ func (t *Tinkoff) Log() utils.Logger {
 func (t *Tinkoff) Request(r *http.Request, data any) error {
 	r.Header.Add("Content-Type", "application/json")
 
+	{
+		b, _ := httputil.DumpRequest(r, true)
+		t.log.Logf("[DEBUG] Request: %s", string(b))
+	}
+
 	resp, err := t.cl.Do(r)
 	if err != nil {
 		return err
+	}
+
+	{
+		b, _ := httputil.DumpResponse(resp, true)
+		t.log.Logf("[DEBUG] Response: %s", string(b))
 	}
 
 	decoder := json.NewDecoder(resp.Body)

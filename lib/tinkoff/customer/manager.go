@@ -62,7 +62,7 @@ func (m *Manager) Remove(customerKey string) (*RemoveResponse, error) {
 func (m *Manager) ListCards(customerKey string) ([]CardItem, error) {
 	data := m.buildRequest(customerKey)
 	result := []CardItem{}
-	err := m.request("/GetCardList", http.MethodPost, data, result)
+	err := m.request("/GetCardList", http.MethodPost, data, &result)
 	return result, err
 }
 

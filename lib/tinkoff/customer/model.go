@@ -68,7 +68,7 @@ type CardItem struct {
 	Pan      string // Номер карты со скрытой частью
 	Status   string // [A, I, D] Статус карты
 	RebillId string `json:"RebillId,omitempty"` // Идентификатор рекуррентного платежа
-	CardType string `json:"CardType,omitempty"` // [0,1,2] (читай как списание, пополнение, списание и пополнение) Тип карты
+	CardType int    `json:"CardType,omitempty"` // [0,1,2] (читай как списание, пополнение, списание и пополнение) Тип карты
 	ExpDate  string `json:"ExpDate,omitempty"`  // Срок действия карты
 }
 

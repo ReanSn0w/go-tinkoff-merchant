@@ -23,7 +23,7 @@ func New(service utils.TinkoffService, terminalID, password string) (*Manager, e
 		return nil, err
 	}
 
-	c := customer.New(service, terminalID, password)
+	c := customer.New(service, terminalID+"E2C", password)
 	if service.Debug() {
 		c.SetCustomURL(safeDealURLTest)
 	} else {

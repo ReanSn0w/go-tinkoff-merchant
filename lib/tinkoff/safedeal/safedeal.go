@@ -32,7 +32,7 @@ func New(service utils.TinkoffService, terminalID, password string) (*Manager, e
 
 	return &Manager{
 		service:    service,
-		terminalID: terminalID,
+		terminalID: terminalID + "E2C",
 		password:   password,
 		payments:   p,
 		customer:   c,

@@ -20,11 +20,12 @@ type InitRequest struct {
 	FailURL         string `json:"FailURL,omitempty"`         // URL для перенаправления пользователя при ошибке в платеже
 	RedirectDueDate string `json:"RedirectDueDate,omitempty"` // [2016-08-31T12:28:00+03:00] Дата окончания действия ссылки
 	Data            struct {
-		Device        string `json:"Device,omitempty"`        // [SDK, Desctop, Mobile]
-		DeviceOs      string `json:"DeviceOs"`                // ОС устройства
-		DeviceWebView bool   `json:"DeviceWebView,omitempty"` // Признак запуска в WebView
-		DeviceBrowser string `json:"Browser,omitempty"`       // Название браузера
-		TinkoffPayWeb bool   `json:"TinkoffPayWeb,omitempty"` // Признак проведения платежа через TinkoffPay
+		Device              string `json:"Device,omitempty"`              // [SDK, Desctop, Mobile]
+		DeviceOs            string `json:"DeviceOs"`                      // ОС устройства
+		DeviceWebView       bool   `json:"DeviceWebView,omitempty"`       // Признак запуска в WebView
+		DeviceBrowser       string `json:"Browser,omitempty"`             // Название браузера
+		TinkoffPayWeb       bool   `json:"TinkoffPayWeb,omitempty"`       // Признак проведения платежа через TinkoffPay
+		StartSpAccumulation string `json:"StartSpAccumulation,omitempty"` // признак совершения выплты 1 к N ["1N"]
 	} `json:"DATA,omitempty"` // Дополнительные параметры платежа
 	Receipt     Receipt `json:"Receipt,omitempty"`    // Данные чека
 	Shops       []Shop  `json:"Shops,omitempty"`      // Объект с данными для распределения платежа по магазинам
@@ -165,7 +166,7 @@ type CancelRequest struct {
 	Token             string  // Подпись запроса
 	IP                string  `json:"IP,omitempty"`               // IP клинта
 	Amount            int64   `json:"Amount,omitempty"`           // Суммма в копейках
-	Reciept           Receipt `json:"Reciept,omitempty"`          // Список товаров по которым производится отмена платежа
+	Receipt           Receipt `json:"Receipt,omitempty"`          // Список товаров по которым производится отмена платежа
 	Shops             []Shop  `json:"Shops,omitempty"`            // JSON объект с данными маркетплейса
 	Route             string  `json:"Route,omitempty"`            // [ТСВ, BNPL] Способ платежа
 	Source            string  `json:"Source,omitempty"`           // [Installment, BNPL] Источник платежа

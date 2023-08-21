@@ -40,17 +40,19 @@ func (p PaymentItem) RemoveToken() Item {
 
 type CardItem struct {
 	TerminalKey string // Идентификатор терминала выданный банком
-	CustomerKey string // Идентификатор пользователя
-	RequestKey  string // Идентификатор запроса
 	Success     bool   // Успешность прохождения запроса
 	Status      string // Статус платежа ["COMPLETED", "REJECTED"]
-	PaymentId   string // Идентификатор транзакции в системе банка
-	ErrorCode   string // Код ошибки, 0 - если успешно
-	CardId      int64  // Идентификатор карты в системе банка
-	Pan         string // Зашифрованный номер карты
-	ExpDate     string // Срок действия карты
-	RebillId    string // Идентификатор для рекуррентного платежа
 	Token       string // Подпись запроса
+
+	CustomerKey      string `json:"CustomerKey,omitempty"`      // Идентификатор пользователя
+	RequestKey       string `json:"RequestKey,omitempty"`       // Идентификатор запроса
+	PaymentId        string `json:"PaymentId,omitempty"`        // Идентификатор транзакции в системе банка
+	ErrorCode        string `json:"ErrorCode,omitempty"`        // Код ошибки, 0 - если успешно
+	CardId           int64  `json:"CardId,omitempty"`           // Идентификатор карты в системе банка
+	Pan              string `json:"Pan,omitempty"`              // Зашифрованный номер карты
+	ExpDate          string `json:"ExpData,omitempty"`          // Срок действия карты
+	RebillId         string `json:"RebillId,omitempty"`         // Идентификатор для рекуррентного платежа
+	SpAccumulationId string `json:"SpAccumulationId,omitempty"` // Accumulation ID
 }
 
 func (c CardItem) GetTerminalKey() string {

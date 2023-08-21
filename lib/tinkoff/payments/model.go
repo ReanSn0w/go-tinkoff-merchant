@@ -199,15 +199,16 @@ type GetStateRequest struct {
 }
 
 type GetStateResponse struct {
-	TerminalKey string // Идентификатор терминала
-	Amount      int64  // Суммма в копейках
-	OrderId     string // Идентификатор платежа в системе продавца
-	Success     bool   // Признак успешности опреации
-	Status      string // Статус транзакции
-	PaymentId   string // Уникальный идентификатор тразакции в системе банка
-	ErrorCode   string // 0 - если успешно
-	Message     string `json:"Message,omitempty"` // Сообщение об ошибке
-	Details     string `json:"Details,omitempty"` // Подробное описание ошибки
+	TerminalKey      string // Идентификатор терминала
+	Amount           int64  // Суммма в копейках
+	OrderId          string // Идентификатор платежа в системе продавца
+	Success          bool   // Признак успешности опреации
+	Status           string // Статус транзакции
+	PaymentId        string // Уникальный идентификатор тразакции в системе банка
+	ErrorCode        string // 0 - если успешно
+	Message          string `json:"Message,omitempty"`          // Сообщение об ошибке
+	Details          string `json:"Details,omitempty"`          // Подробное описание ошибки
+	SpAccumulationId string `json:"SpAccumulationId,omitempty"` // Идентификатор для разделенной выплаты по безопасной сделке
 	// Params      struct {
 	// 	Route        string `json:"Route,omitempty"`        // [TCB] способ платежа
 	// 	Source       string `json:"Source,omitempty"`       // [Installment] источник платежа

@@ -7,6 +7,9 @@ type InitPayout struct {
 	CardId      string
 	Amount      int64
 	CustomerKey string
+	Data        struct {
+		SpAccumulationId string `json:"SpAccumulationId,omitempty"`
+	} `json:"DATA,omitempty"`
 }
 
 type InitResponse struct {
